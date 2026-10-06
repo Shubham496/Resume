@@ -1,3 +1,6 @@
+import html
+import re
+
 from django.db import models
 
 
@@ -5,10 +8,6 @@ class Skill(models.Model):
     """A skill to display on the resume page."""
     name = models.CharField(max_length=100)
     category = models.CharField(max_length=100, default='General')
-    level = models.PositiveSmallIntegerField(
-        default=85,
-        help_text='Proficiency 0–100'
-    )
     order = models.PositiveSmallIntegerField(default=0)
 
     class Meta:
@@ -110,3 +109,25 @@ class Project(models.Model):
 
     def __str__(self):
         return f'{self.title} [{self.get_project_type_display()}]'
+
+    @property
+    def embed_src(self):
+        """Return a browser-safe iframe src from a URL or common embed snippet."""
+        value = self.embed_url.strip()
+        if not value:
+            return ''
+
+        iframe_match = re.search(r'<iframe[^>]+src=["\']([^"\']+)["\']', value, re.IGNORECASE)
+        if iframe_match:
+            return html.unescape(iframe_match.group(1))
+
+        tableau_match = re.search(
+            r'<param\s+name=["\']name["\']\s+value=["\']([^"\']+)["\']',
+            value,
+            re.IGNORECASE,
+        )
+        if tableau_match:
+            view_name = html.unescape(tableau_match.group(1)).replace('\\/', '/')
+            return f'https://public.tableau.com/views/{view_name}?:showVizHome=no&:embed=true'
+
+        return value

@@ -6,7 +6,7 @@ from portfolio.models import Skill, Experience, Education, Certification, Projec
 class PortfolioViewsTest(TestCase):
     def setUp(self):
         self.client = Client()
-        Skill.objects.create(name='Power BI', category='Business Tools', level=95, order=1)
+        Skill.objects.create(name='Power BI', category='Business Tools', order=1)
         Experience.objects.create(
             title='Data Analyst',
             company='LNP Infotech',
@@ -61,6 +61,32 @@ class PortfolioViewsTest(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, 'Adidas Retail Dashboard')
         self.assertContains(response, 'DAX YoY measures')
+
+    def test_tableau_embed_snippet_is_converted_to_iframe_src(self):
+        self.project.project_type = 'tableau'
+        self.project.embed_url = """
+        <div class='tableauPlaceholder'>
+          <object class='tableauViz'>
+            <param name='name' value='graphs_17913129898030&#47;rowchart' />
+          </object>
+        </div>
+        """
+        self.project.save()
+
+        response = self.client.get(reverse('portfolio:project_detail', kwargs={'slug': self.project.slug}))
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(
+            response,
+            'src="https://public.tableau.com/views/graphs_17913129898030/rowchart?:showVizHome=no&amp;:embed=true"',
+        )
+
+    def test_iframe_embed_snippet_uses_its_src(self):
+        self.project.embed_url = '<iframe src="https://example.com/embed/report"></iframe>'
+        self.project.save()
+
+        response = self.client.get(reverse('portfolio:project_detail', kwargs={'slug': self.project.slug}))
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'src="https://example.com/embed/report"')
 
     def test_contact_page_status(self):
         response = self.client.get(reverse('portfolio:contact'))

@@ -4,8 +4,8 @@ from .models import Certification, Education, Experience, Project, Skill
 
 @admin.register(Skill)
 class SkillAdmin(admin.ModelAdmin):
-    list_display = ('name', 'category', 'level', 'order')
-    list_editable = ('level', 'order')
+    list_display = ('name', 'category', 'order')
+    list_editable = ('order',)
     list_filter = ('category',)
 
 

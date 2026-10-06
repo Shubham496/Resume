@@ -36,18 +36,11 @@
     {% for group in skill_groups %}
       <div class="col-md-6">
         <h6 class="fw-bold text-dark mb-2"><i class="bi bi-check2-circle text-primary me-1"></i> {{ group.grouper }}</h6>
-        {% for skill in group.list %}
-          <div class="d-flex align-items-center mb-2">
-            <div class="me-2 small" style="min-width:180px;">{{ skill.name }}</div>
-            <div class="progress flex-grow-1" style="height:8px;">
-              <div class="progress-bar bg-primary" role="progressbar"
-                   style="width:{{ skill.level }}%"
-                   aria-valuenow="{{ skill.level }}" aria-valuemin="0" aria-valuemax="100">
-              </div>
-            </div>
-            <small class="ms-2 text-muted">{{ skill.level }}%</small>
-          </div>
-        {% endfor %}
+        <div class="d-flex flex-wrap gap-2">
+          {% for skill in group.list %}
+            <span class="badge rounded-pill text-bg-light border fw-normal skill-badge">{{ skill.name }}</span>
+          {% endfor %}
+        </div>
       </div>
     {% endfor %}
   </div>
