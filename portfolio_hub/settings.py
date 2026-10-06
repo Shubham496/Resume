@@ -40,8 +40,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     # local apps
     'portfolio',
-    'stock_analysis',
-    'ml_demo',
 ]
 
 MIDDLEWARE = [

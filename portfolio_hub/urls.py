@@ -9,9 +9,7 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('',           include('portfolio.urls')),
-    path('stocks/',    include('stock_analysis.urls')),
-    path('ml/',        include('ml_demo.urls')),
+    path('',       include('portfolio.urls')),
 ]
 
 # Serve media files in development

@@ -66,13 +66,3 @@ class PortfolioViewsTest(TestCase):
         response = self.client.get(reverse('portfolio:contact'))
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, '9520132466')
-
-    def test_stock_analysis_pages(self):
-        response = self.client.get(reverse('stock_analysis:index'))
-        self.assertEqual(response.status_code, 200)
-        response_detail = self.client.get(reverse('stock_analysis:detail', kwargs={'ticker': 'AAPL'}))
-        self.assertEqual(response_detail.status_code, 200)
-
-    def test_ml_demo_page(self):
-        response = self.client.get(reverse('ml_demo:index'))
-        self.assertEqual(response.status_code, 200)
