@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Résumé{% endblock %}
+{% block meta_description %}Full résumé — skills, experience, and education{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <h1 class="fw-bold">Résumé</h1>
+  <a href="{% static 'files/resume.pdf' %}" class="btn btn-outline-primary" download>
+    <i class="bi bi-download"></i> Download PDF
+  </a>
+</div>
+
+<!-- Skills -->
+<section class="mb-5">
+  <h2 class="h4 border-bottom pb-2 mb-3">Skills</h2>
+  {% regroup skills by category as skill_groups %}
+  {% for group in skill_groups %}
+    <h6 class="text-muted mt-3">{{ group.grouper }}</h6>
+    {% for skill in group.list %}
+      <div class="d-flex align-items-center mb-2">
+        <div class="me-2" style="min-width:130px;">{{ skill.name }}</div>
+        <div class="progress flex-grow-1" style="height:10px;">
+          <div class="progress-bar bg-primary" role="progressbar"
+               style="width:{{ skill.level }}%"
+               aria-valuenow="{{ skill.level }}" aria-valuemin="0" aria-valuemax="100">
+          </div>
+        </div>
+        <small class="ms-2 text-muted">{{ skill.level }}%</small>
+      </div>
+    {% endfor %}
+  {% empty %}
+    <p class="text-muted fst-italic">Add skills via the Admin panel.</p>
+  {% endfor %}
+</section>
+
+<!-- Experience -->
+<section class="mb-5">
+  <h2 class="h4 border-bottom pb-2 mb-3">Experience</h2>
+  {% for exp in experiences %}
+    <div class="mb-4">
+      <div class="d-flex justify-content-between">
+        <h5 class="mb-0">{{ exp.title }}</h5>
+        <small class="text-muted">{{ exp.duration }}</small>
+      </div>
+      <div class="text-primary fw-semibold">{{ exp.company }}{% if exp.location %} · {{ exp.location }}{% endif %}</div>
+      <p class="mt-2">{{ exp.description|linebreaksbr }}</p>
+    </div>
+  {% empty %}
+    <p class="text-muted fst-italic">Add experience via the Admin panel.</p>
+  {% endfor %}
+</section>
+
+<!-- Education -->
+<section class="mb-5">
+  <h2 class="h4 border-bottom pb-2 mb-3">Education</h2>
+  {% for edu in educations %}
+    <div class="mb-3">
+      <div class="d-flex justify-content-between">
+        <h5 class="mb-0">{{ edu.degree }}</h5>
+        <small class="text-muted">{{ edu.year_end }}</small>
+      </div>
+      <div class="text-primary fw-semibold">{{ edu.institution }}</div>
+      {% if edu.description %}<p class="mt-1">{{ edu.description }}</p>{% endif %}
+    </div>
+  {% empty %}
+    <p class="text-muted fst-italic">Add education via the Admin panel.</p>
+  {% endfor %}
+</section>
+{% endblock %}

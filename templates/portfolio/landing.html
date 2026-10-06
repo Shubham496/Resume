@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+<!-- Hero -->
+<section class="py-5 text-center border-bottom">
+  <img src="{% static 'images/profile.jpg' %}" alt="Profile photo"
+       class="rounded-circle mb-3" width="140" height="140"
+       onerror="this.style.display='none'" />
+  <h1 class="display-5 fw-bold">Hi, I'm <span class="text-primary">Your Name</span></h1>
+  <p class="lead col-lg-7 mx-auto text-muted">
+    Data Scientist &amp; ML Engineer — I turn raw data into actionable insights
+    and production-ready models.
+  </p>
+  <div class="d-flex gap-2 justify-content-center">
+    <a href="{% url 'portfolio:resume' %}" class="btn btn-primary btn-lg">
+      <i class="bi bi-file-earmark-person"></i> View Résumé
+    </a>
+    <a href="{% static 'files/resume.pdf' %}" class="btn btn-outline-secondary btn-lg" download>
+      <i class="bi bi-download"></i> Download PDF
+    </a>
+    <a href="{% url 'portfolio:contact' %}" class="btn btn-outline-secondary btn-lg">
+      <i class="bi bi-envelope"></i> Contact
+    </a>
+  </div>
+</section>
+
+<!-- Featured Projects -->
+<section class="py-5">
+  <h2 class="mb-4">Featured Projects</h2>
+  <div class="row g-4">
+    <!-- Static cards for the showcase apps -->
+    <div class="col-md-6">
+      <div class="card h-100 shadow-sm">
+        <div class="card-body">
+          <h5 class="card-title"><i class="bi bi-graph-up-arrow text-success"></i> Stock Analysis</h5>
+          <p class="card-text text-muted">
+            Interactive charts and statistical summaries of equity price data
+            loaded from a Feather file for sub-millisecond reads.
+          </p>
+          <a href="{% url 'stock_analysis:index' %}" class="btn btn-sm btn-success">Explore →</a>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="card h-100 shadow-sm">
+        <div class="card-body">
+          <h5 class="card-title"><i class="bi bi-cpu text-primary"></i> ML Demo</h5>
+          <p class="card-text text-muted">
+            Live scatter-plot visualisation of a classification model's
+            predictions with accuracy metrics.
+          </p>
+          <a href="{% url 'ml_demo:index' %}" class="btn btn-sm btn-primary">Explore →</a>
+        </div>
+      </div>
+    </div>
+    {% for project in projects %}
+    <div class="col-md-6">
+      <div class="card h-100 shadow-sm">
+        {% if project.image %}
+          <img src="{{ project.image.url }}" class="card-img-top" alt="{{ project.title }}" style="height:180px;object-fit:cover;" />
+        {% endif %}
+        <div class="card-body">
+          <h5 class="card-title">{{ project.title }}</h5>
+          <p class="card-text text-muted">{{ project.summary }}</p>
+          {% if project.url %}
+            <a href="{{ project.url }}" class="btn btn-sm btn-outline-primary">View →</a>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</section>
+{% endblock %}

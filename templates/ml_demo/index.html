@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+{% block title %}ML Demo{% endblock %}
+
+{% block extra_head %}
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+{% endblock %}
+
+{% block content %}
+<h1 class="fw-bold mb-1">ML Demo — Classification</h1>
+<p class="text-muted mb-2">
+  Model accuracy: <strong class="text-success">{{ accuracy }}%</strong>
+  on {{ n_samples }} samples.
+</p>
+
+<div class="card shadow-sm p-3 mb-4" style="max-width:700px;">
+  <canvas id="scatterChart" height="120"></canvas>
+</div>
+
+<p class="text-muted small">
+  Each point is a sample. Colour = actual class (blue = 0, orange = 1).
+  The model's predictions and probabilities are precomputed in <code>/data/ml_results.feather</code>.
+</p>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  const raw = {{ scatter_json|safe }};
+
+  // Split by class for colouring
+  const class0 = {x: [], y: []};
+  const class1 = {x: [], y: []};
+  raw.x.forEach((xi, i) => {
+    if (raw.label[i] === 0) { class0.x.push(xi); class0.y.push(raw.y[i]); }
+    else                    { class1.x.push(xi); class1.y.push(raw.y[i]); }
+  });
+
+  const toPoints = (cls) => cls.x.map((xi, i) => ({x: xi, y: cls.y[i]}));
+
+  new Chart(document.getElementById('scatterChart'), {
+    type: 'scatter',
+    data: {
+      datasets: [
+        { label: 'Class 0', data: toPoints(class0), backgroundColor: 'rgba(13,110,253,0.6)', pointRadius: 5 },
+        { label: 'Class 1', data: toPoints(class1), backgroundColor: 'rgba(253,126,20,0.6)',  pointRadius: 5 },
+      ]
+    },
+    options: {
+      responsive: true,
+      plugins: { legend: { position: 'top' } },
+      scales: {
+        x: { title: { display: true, text: 'Feature 1' } },
+        y: { title: { display: true, text: 'Feature 2' } },
+      }
+    }
+  });
+</script>
+{% endblock %}
