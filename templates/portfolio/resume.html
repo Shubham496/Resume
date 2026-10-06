@@ -1,71 +1,113 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block title %}Résumé{% endblock %}
-{% block meta_description %}Full résumé — skills, experience, and education{% endblock %}
+{% block title %}Résumé | Shubham Singh{% endblock %}
+{% block meta_description %}Full résumé of Shubham Singh — Data Analyst with 3 years experience in Power BI, SQL, Tableau, and Excel{% endblock %}
 
 {% block content %}
-<div class="d-flex justify-content-between align-items-center mb-4">
-  <h1 class="fw-bold">Résumé</h1>
-  <a href="{% static 'files/resume.pdf' %}" class="btn btn-outline-primary" download>
-    <i class="bi bi-download"></i> Download PDF
-  </a>
+<div class="d-flex flex-wrap justify-content-between align-items-center mb-4 pb-2 border-bottom">
+  <div>
+    <h1 class="fw-bold mb-0">Shubham Singh</h1>
+    <p class="text-muted mb-0">Data Analyst &bull; Business Intelligence Developer &bull; Automation Enthusiast</p>
+  </div>
+  <div class="d-flex gap-2 mt-3 mt-md-0">
+    <a href="mailto:shubhamsinghh057@gmail.com" class="btn btn-outline-secondary btn-sm">
+      <i class="bi bi-envelope"></i> Email Me
+    </a>
+    <a href="{% static 'files/resume.pdf' %}" class="btn btn-primary btn-sm" download>
+      <i class="bi bi-download"></i> Download PDF
+    </a>
+  </div>
 </div>
 
-<!-- Skills -->
-<section class="mb-5">
-  <h2 class="h4 border-bottom pb-2 mb-3">Skills</h2>
+<!-- Professional Summary -->
+<section class="card shadow-sm border-0 p-4 mb-4">
+  <h4 class="fw-bold mb-2 text-primary border-bottom pb-2">Professional Summary</h4>
+  <p class="mb-0 text-secondary">
+    Data Analyst with 3 years experience in translating business requirements into actionable insights, developing data-driven dashboards, and streamlining reporting processes. Skilled in Power BI, SQL, and data warehousing with experience in stakeholder management, process improvement, and KPI tracking. Adept at bridging the gap between business needs and technical solutions to drive informed decision-making.
+  </p>
+</section>
+
+<!-- Skills Section -->
+<section class="card shadow-sm border-0 p-4 mb-4">
+  <h4 class="fw-bold mb-3 text-primary border-bottom pb-2">Skills &amp; Technical Competencies</h4>
   {% regroup skills by category as skill_groups %}
-  {% for group in skill_groups %}
-    <h6 class="text-muted mt-3">{{ group.grouper }}</h6>
-    {% for skill in group.list %}
-      <div class="d-flex align-items-center mb-2">
-        <div class="me-2" style="min-width:130px;">{{ skill.name }}</div>
-        <div class="progress flex-grow-1" style="height:10px;">
-          <div class="progress-bar bg-primary" role="progressbar"
-               style="width:{{ skill.level }}%"
-               aria-valuenow="{{ skill.level }}" aria-valuemin="0" aria-valuemax="100">
+  <div class="row g-4">
+    {% for group in skill_groups %}
+      <div class="col-md-6">
+        <h6 class="fw-bold text-dark mb-2"><i class="bi bi-check2-circle text-primary me-1"></i> {{ group.grouper }}</h6>
+        {% for skill in group.list %}
+          <div class="d-flex align-items-center mb-2">
+            <div class="me-2 small" style="min-width:180px;">{{ skill.name }}</div>
+            <div class="progress flex-grow-1" style="height:8px;">
+              <div class="progress-bar bg-primary" role="progressbar"
+                   style="width:{{ skill.level }}%"
+                   aria-valuenow="{{ skill.level }}" aria-valuemin="0" aria-valuemax="100">
+              </div>
+            </div>
+            <small class="ms-2 text-muted">{{ skill.level }}%</small>
           </div>
-        </div>
-        <small class="ms-2 text-muted">{{ skill.level }}%</small>
+        {% endfor %}
       </div>
     {% endfor %}
-  {% empty %}
-    <p class="text-muted fst-italic">Add skills via the Admin panel.</p>
-  {% endfor %}
+  </div>
 </section>
 
-<!-- Experience -->
-<section class="mb-5">
-  <h2 class="h4 border-bottom pb-2 mb-3">Experience</h2>
+<!-- Experience Section -->
+<section class="card shadow-sm border-0 p-4 mb-4">
+  <h4 class="fw-bold mb-3 text-primary border-bottom pb-2">Professional Experience</h4>
   {% for exp in experiences %}
-    <div class="mb-4">
-      <div class="d-flex justify-content-between">
-        <h5 class="mb-0">{{ exp.title }}</h5>
-        <small class="text-muted">{{ exp.duration }}</small>
+    <div class="mb-4 pb-3 {% if not forloop.last %}border-bottom{% endif %}">
+      <div class="d-flex flex-wrap justify-content-between align-items-baseline">
+        <h5 class="fw-bold mb-0 text-dark">{{ exp.title }}</h5>
+        <span class="badge bg-light text-muted border">{{ exp.duration }}</span>
       </div>
-      <div class="text-primary fw-semibold">{{ exp.company }}{% if exp.location %} · {{ exp.location }}{% endif %}</div>
-      <p class="mt-2">{{ exp.description|linebreaksbr }}</p>
+      <div class="text-primary fw-semibold mb-2">
+        {{ exp.company }}{% if exp.location %} &bull; <span class="text-muted fw-normal">{{ exp.location }}</span>{% endif %}
+      </div>
+      <p class="text-secondary small mb-0">{{ exp.description|linebreaksbr }}</p>
     </div>
   {% empty %}
-    <p class="text-muted fst-italic">Add experience via the Admin panel.</p>
+    <p class="text-muted fst-italic">No experience recorded yet.</p>
   {% endfor %}
 </section>
 
-<!-- Education -->
-<section class="mb-5">
-  <h2 class="h4 border-bottom pb-2 mb-3">Education</h2>
-  {% for edu in educations %}
-    <div class="mb-3">
-      <div class="d-flex justify-content-between">
-        <h5 class="mb-0">{{ edu.degree }}</h5>
-        <small class="text-muted">{{ edu.year_end }}</small>
-      </div>
-      <div class="text-primary fw-semibold">{{ edu.institution }}</div>
-      {% if edu.description %}<p class="mt-1">{{ edu.description }}</p>{% endif %}
+<!-- Education & Certifications Row -->
+<div class="row g-4">
+  <!-- Education -->
+  <div class="col-md-6">
+    <div class="card shadow-sm border-0 p-4 h-100">
+      <h4 class="fw-bold mb-3 text-primary border-bottom pb-2">Education</h4>
+      {% for edu in educations %}
+        <div class="mb-3">
+          <div class="d-flex justify-content-between align-items-baseline">
+            <h6 class="fw-bold mb-0">{{ edu.degree }}</h6>
+            <span class="badge bg-light text-muted">{{ edu.year_end }}</span>
+          </div>
+          <div class="text-secondary small">{{ edu.institution }}</div>
+          {% if edu.description %}<p class="mt-1 small text-muted">{{ edu.description }}</p>{% endif %}
+        </div>
+      {% endfor %}
     </div>
-  {% empty %}
-    <p class="text-muted fst-italic">Add education via the Admin panel.</p>
-  {% endfor %}
-</section>
+  </div>
+
+  <!-- Certifications -->
+  <div class="col-md-6">
+    <div class="card shadow-sm border-0 p-4 h-100">
+      <h4 class="fw-bold mb-3 text-primary border-bottom pb-2">Certifications</h4>
+      <ul class="list-unstyled mb-0">
+        {% for cert in certifications %}
+        <li class="mb-3 d-flex align-items-start">
+          <i class="bi bi-patch-check-fill text-success fs-5 me-2 mt-0"></i>
+          <div>
+            <strong>{{ cert.title }}</strong> &bull; <span class="text-muted">{{ cert.issuer }} ({{ cert.year }})</span>
+          </div>
+        </li>
+        {% empty %}
+        <li class="text-muted fst-italic">No certifications listed.</li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+</div>
 {% endblock %}

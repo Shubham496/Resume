@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Education, Experience, Project, Skill
+from .models import Certification, Education, Experience, Project, Skill
 
 
 @admin.register(Skill)
@@ -21,8 +21,15 @@ class EducationAdmin(admin.ModelAdmin):
     list_editable = ('order',)
 
 
+@admin.register(Certification)
+class CertificationAdmin(admin.ModelAdmin):
+    list_display = ('title', 'issuer', 'year', 'order')
+    list_editable = ('order',)
+
+
 @admin.register(Project)
 class ProjectAdmin(admin.ModelAdmin):
-    list_display = ('title', 'slug', 'is_featured', 'order')
-    list_editable = ('is_featured', 'order')
+    list_display = ('title', 'project_type', 'is_featured', 'order')
+    list_editable = ('project_type', 'is_featured', 'order')
+    list_filter = ('project_type', 'is_featured')
     prepopulated_fields = {'slug': ('title',)}

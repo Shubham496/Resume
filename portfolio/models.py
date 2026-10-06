@@ -6,7 +6,7 @@ class Skill(models.Model):
     name = models.CharField(max_length=100)
     category = models.CharField(max_length=100, default='General')
     level = models.PositiveSmallIntegerField(
-        default=80,
+        default=85,
         help_text='Proficiency 0–100'
     )
     order = models.PositiveSmallIntegerField(default=0)
@@ -55,13 +55,53 @@ class Education(models.Model):
         return f'{self.degree} — {self.institution}'
 
 
+class Certification(models.Model):
+    """Certifications earned."""
+    title = models.CharField(max_length=200)
+    issuer = models.CharField(max_length=200)
+    year = models.PositiveSmallIntegerField()
+    credential_url = models.URLField(blank=True)
+    order = models.PositiveSmallIntegerField(default=0)
+
+    class Meta:
+        ordering = ['order', '-year']
+
+    def __str__(self):
+        return f'{self.title} ({self.issuer}, {self.year})'
+
+
 class Project(models.Model):
-    """A featured project shown on the landing page."""
+    """Showcase project (BI, Power BI, Tableau, Excel, Data Engineering)."""
+    TOOL_CHOICES = [
+        ('powerbi', 'Power BI'),
+        ('tableau', 'Tableau'),
+        ('excel', 'Excel Model'),
+        ('python', 'Python / Django'),
+        ('sql', 'SQL / Data Warehouse'),
+    ]
+
     title = models.CharField(max_length=200)
     slug = models.SlugField(unique=True)
+    project_type = models.CharField(max_length=20, choices=TOOL_CHOICES, default='powerbi')
     summary = models.TextField()
+    key_highlights = models.TextField(
+        blank=True,
+        help_text='Bullet points or details separated by newlines.'
+    )
     image = models.ImageField(upload_to='projects/', blank=True)
-    url = models.CharField(max_length=300, blank=True, help_text='Internal path or external URL')
+    embed_url = models.TextField(
+        blank=True,
+        help_text='Tableau Public embed URL, Power BI iframe src, or OneDrive Excel embed link'
+    )
+    external_url = models.URLField(
+        blank=True,
+        help_text='Direct link to view/interact or download (Tableau Public / GitHub / Drive)'
+    )
+    download_file = models.FileField(
+        upload_to='project_files/',
+        blank=True,
+        help_text='Attach .pbix, .twbx, or .xlsx file here'
+    )
     order = models.PositiveSmallIntegerField(default=0)
     is_featured = models.BooleanField(default=True)
 
@@ -69,4 +109,4 @@ class Project(models.Model):
         ordering = ['order']
 
     def __str__(self):
-        return self.title
+        return f'{self.title} [{self.get_project_type_display()}]'

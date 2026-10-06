@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+
+{% block title %}{{ project.title }} | Showcase{% endblock %}
+
+{% block content %}
+<div class="mb-4">
+  <a href="{% url 'portfolio:projects_list' %}" class="btn btn-outline-secondary btn-sm mb-3">&larr; Back to all projects</a>
+  <div class="d-flex flex-wrap justify-content-between align-items-center">
+    <div>
+      {% if project.project_type == 'powerbi' %}
+        <span class="badge bg-warning text-dark fs-6 mb-2"><i class="bi bi-bar-chart-fill"></i> Power BI Dashboard</span>
+      {% elif project.project_type == 'tableau' %}
+        <span class="badge bg-primary fs-6 mb-2"><i class="bi bi-pie-chart-fill"></i> Tableau Visualization</span>
+      {% elif project.project_type == 'excel' %}
+        <span class="badge bg-success fs-6 mb-2"><i class="bi bi-file-earmark-excel-fill"></i> Excel Financial Model</span>
+      {% else %}
+        <span class="badge bg-secondary fs-6 mb-2">{{ project.get_project_type_display }}</span>
+      {% endif %}
+      <h1 class="fw-bold mb-2">{{ project.title }}</h1>
+    </div>
+    <div class="d-flex gap-2">
+      {% if project.download_file %}
+        <a href="{{ project.download_file.url }}" class="btn btn-outline-success btn-sm" download>
+          <i class="bi bi-download"></i> Download Source File
+        </a>
+      {% endif %}
+      {% if project.external_url %}
+        <a href="{{ project.external_url }}" target="_blank" rel="noopener" class="btn btn-primary btn-sm">
+          <i class="bi bi-box-arrow-up-right"></i> Open External Link
+        </a>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+<!-- Embedded Dashboard Container (Tableau / Power BI / Excel Online) -->
+{% if project.embed_url %}
+<div class="card shadow-sm border-0 mb-4 p-2 bg-dark">
+  <div class="ratio ratio-16x9">
+    <iframe src="{{ project.embed_url }}" frameborder="0" allowfullscreen="true" class="rounded"></iframe>
+  </div>
+</div>
+{% else %}
+<div class="alert alert-info d-flex align-items-center mb-4" role="alert">
+  <i class="bi bi-info-circle-fill me-2 fs-4"></i>
+  <div>
+    <strong>Interactive Embed Placeholder:</strong>
+    You can easily attach a live embedded iframe or dashboard URL via the <strong>Django Admin</strong> (<a href="/admin/portfolio/project/{{ project.id }}/change/" class="alert-link" target="_blank">Edit in Admin</a>) under the <code>embed_url</code> or <code>download_file</code> fields.
+  </div>
+</div>
+{% endif %}
+
+<div class="row g-4">
+  <div class="col-lg-8">
+    <div class="card shadow-sm border-0 p-4 mb-4">
+      <h4 class="fw-bold mb-3 border-bottom pb-2">Project Overview</h4>
+      <p class="text-secondary lead fs-6">{{ project.summary }}</p>
+
+      {% if highlights %}
+      <h5 class="fw-bold mt-4 mb-3">Key Technical Highlights &amp; Methodology</h5>
+      <ul class="list-group list-group-flush">
+        {% for hl in highlights %}
+        <li class="list-group-item px-0 py-2 d-flex align-items-start">
+          <i class="bi bi-check-circle-fill text-success me-2 mt-1"></i>
+          <span>{{ hl }}</span>
+        </li>
+        {% endfor %}
+      </ul>
+      {% endif %}
+    </div>
+  </div>
+
+  <div class="col-lg-4">
+    <div class="card shadow-sm border-0 p-4 mb-4">
+      <h5 class="fw-bold mb-3">Project Metadata</h5>
+      <ul class="list-unstyled mb-0 small">
+        <li class="mb-2"><strong>Category:</strong> {{ project.get_project_type_display }}</li>
+        <li class="mb-2"><strong>Developer:</strong> Shubham Singh</li>
+        <li class="mb-2"><strong>Status:</strong> Completed &bull; Ready for Review</li>
+        {% if project.download_file %}
+        <li class="mt-3">
+          <a href="{{ project.download_file.url }}" class="btn btn-outline-success btn-sm w-100" download>
+            <i class="bi bi-file-earmark-arrow-down"></i> Download Project File
+          </a>
+        </li>
+        {% endif %}
+      </ul>
+    </div>
+  </div>
+</div>
+{% endblock %}
